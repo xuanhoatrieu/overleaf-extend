@@ -1,0 +1,7 @@
+---
+services:
+  sharelatex:
+    image: overleafcep/sharelatex:6.1.1-ext-v3.5
+    volumes:
+      - /home/moodle/overleaf-toolkit/config/git-bridge-settings.js:/etc/overleaf/git-bridge-settings.js
+      - /home/moodle/overleaf-toolkit/config/90-git-bridge.sh:/etc/my_init.d/90-git-bridge.sh

@@ -1,0 +1,44 @@
+name: Deploy Overleaf Config
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'config/**'
+      - 'install.sh'
+      - 'update.sh'
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Deploy to server
+        uses: appleboy/ssh-action@v1
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ secrets.SSH_USER }}
+          key: ${{ secrets.SSH_KEY }}
+          script: |
+            set -e
+            REPO_DIR="$HOME/overleaf-extend"
+            TOOLKIT_DIR="$HOME/overleaf-toolkit"
+
+            # Pull latest config
+            cd $REPO_DIR && git pull origin main
+
+            # Apply config
+            cp config/overleaf.rc $TOOLKIT_DIR/config/overleaf.rc
+            cp config/version $TOOLKIT_DIR/config/version
+            cp config/docker-compose.override.yml $TOOLKIT_DIR/config/docker-compose.override.yml
+            cp config/90-git-bridge.sh $TOOLKIT_DIR/config/90-git-bridge.sh
+            cp config/git-bridge-settings.js $TOOLKIT_DIR/config/git-bridge-settings.js
+            chmod +x $TOOLKIT_DIR/config/90-git-bridge.sh
+
+            # Restart services
+            cd $TOOLKIT_DIR && bin/stop && bin/up -d
+
+            echo "✅ Deployment complete!"
+            bin/docker-compose ps

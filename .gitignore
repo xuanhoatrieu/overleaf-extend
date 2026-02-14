@@ -1,0 +1,11 @@
+# Secrets - NEVER commit these
+variables.env
+*.env
+!*.env.template
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Data
+data/
