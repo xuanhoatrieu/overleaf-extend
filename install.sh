@@ -66,3 +66,4 @@ echo "  1. Edit $TOOLKIT_DIR/config/variables.env with your settings"
 echo "  2. cd $TOOLKIT_DIR && bin/up -d"
 echo "  3. Access at http://<server-ip>:8800"
 echo ""
+
